@@ -2,13 +2,13 @@
  * @file basic.frag
  * @brief Fragment shader
  *
- * @author Darío Rodríguez
+ * @author Darío Rodríguez Hernández
  * @date 00/00/0000
  * @version 0.0
  */
 
 //#shader fragment
-//#version 330 core
+#version 330 core
 
 layout(location = 0) out vec4 color;
 

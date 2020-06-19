@@ -1,8 +1,9 @@
 /**
  * @file main.cpp
- * @brief Proyecto base OpenGL
+ * @brief Proyecto base Modern OpenGL
+ * Programa principal del proyecto base de Modern OpenGL.
  *
- * @author Darío Rodríguez
+ * @author Darío Rodríguez Hernández
  * @date 00/00/0000
  * @version 0.0
  */
@@ -17,43 +18,15 @@
 #include <string>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+// Mis clases
+#include "Renderer.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
+#include "VertexArray.h"
+
 using namespace std;
 
-/**
-* @def ASSERT(x)
-* @brief Si x es FALSE, añade un breakpoint en la linea donde se ha producido.
-*/
-#define ASSERT(x) if (!(x)) __debugbreak();
-/**
-* @def openGLCall(x)
-* @brief Comprueba si se han creado errores en la funcion de OpenGL introducida y, en este caso, añade un breakpoint.
-*/
-#define openGLCall(x) openGLClearError(); x; ASSERT(openGLCheckError(#x, __FILE__, __LINE__));
-
-/**
- * @brief Limpia todos los flags de errores que ha producido OpenGL.
- */
-static void openGLClearError()
-{
-    while (glGetError());
-}
-
-/**
-* @brief Mira los errores (banderas) generados por OpenGL e imprime información de ellos.
-*
-* @param [in] function Nombre de la función donde se está comprobando si hay errores.
-* @param [in] line Linea del código donde se encuentra la llamada a esa función.
-* @return No se encuentran errores
-*/
-static bool openGLCheckError(const char* function, const char* file, int line)
-{
-    while (GLenum error = glGetError()) 
-    {
-        cout << "[OpenGL Error]( " << function << " <- " << file << " <- Line: " << line << " ): " << error << endl;
-        return false;
-    }
-    return true;
-}
 
 /**
  * @brief Introduce en un string el contenido de un fichero.
@@ -139,13 +112,15 @@ static unsigned int createShaderProgram(const string& vertexShader, const string
 }
 
 /*
-* Main function
+* Función principal
 */
 int main(void)
 {
     GLFWwindow* window;
 
-    /* Initialize GLFW */
+    /********************/
+    /* INICIALIZACIONES */
+    /********************/
     if (!glfwInit())
         return -1;
 
@@ -153,7 +128,7 @@ int main(void)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    /* Create a windowed mode window and its OpenGL context */
+    // Creea una ventana en modo ventana y si contexto de OpenGL
     window = glfwCreateWindow(640, 480, "My window :)", NULL, NULL);
     if (!window)
     {
@@ -161,19 +136,19 @@ int main(void)
         return -1;
     }
 
-    /* Make the window's context current */
+    // Hace actual el contexto de la ventana
     glfwMakeContextCurrent(window);
 
+    // Para controlar el framerate
     glfwSwapInterval(1);
 
-    /* Initialize GLEW */
     GLenum err = glewInit();
     if (GLEW_OK != err)
     {
         fprintf(stderr, "[GLEW Error]: %s\n", glewGetErrorString(err));
     }
 
-    // Print initial info
+    // Imprimir información inicial
     cout << "Versions:\n";
     cout << "---OpenGL:\t" << glGetString(GL_VERSION) << "\n";
     cout << "---GLSL:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << "\n";
@@ -181,84 +156,77 @@ int main(void)
     cout << "---GLEW:\t" << glewGetString(GLEW_VERSION) << "\n";
 
 
-    /* Geometries */
-    float positions[8] = {
-        -0.5f, -0.5f, // 0
-         0.5f, -0.5f, // 1
-         0.5f,  0.5f, // 2
-        -0.5f,  0.5f  // 3
-    };
-
-    unsigned int indices[] =
+    /*******************/
+    /* PARTE PRINCIPAL */
+    /*******************/
     {
-        0, 1, 2,
-        2, 3, 0
-    };
+        /* Geometrias */
+        float positions[8] = {
+            -0.5f, -0.5f, // 0
+             0.5f, -0.5f, // 1
+             0.5f,  0.5f, // 2
+            -0.5f,  0.5f  // 3
+        };
 
-    // RECORDAR QUE OPENGL ES UNA MAQUINA DE ESTADOS //
+        unsigned int indices[] =
+        {
+            0, 1, 2,
+            2, 3, 0
+        };
 
-    // Se crea un Vertex Array y se selecciona (bind).
-    unsigned int vao; // Vertex array object
-    openGLCall(glGenVertexArrays(1, &vao));
-    openGLCall(glBindVertexArray(vao));
-
-    // Se crea un Vertex Buffer y se selecciona (bind).
-    unsigned int buffer; // Vertex buffer object
-    openGLCall(glGenBuffers(1, &buffer));
-    openGLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-    openGLCall(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW));
-    
-    // Después se elige el layout que se va a usar para interpretar el buffer 0. Esto ligará el
-    // vertex buffer con el vertex array. 
-    openGLCall(glEnableVertexAttribArray(0));
-    openGLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0)); // Esto relaciona el buffer con el vao
-
-
-    unsigned int ibo; // Index buffer object
-    openGLCall(glGenBuffers(1, &ibo));
-    openGLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
-    openGLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW));
-
-    /* Shaders */
-    string vertexShader = fileToString("resources/shaders/basic.vert");
-    string fragmentShader = fileToString("resources/shaders/basic.frag");
-
-    unsigned int shader = createShaderProgram(vertexShader, fragmentShader);
-    openGLCall(int location = glGetUniformLocation(shader, "u_Color"));
-    ASSERT(location != -1); // -1: Can't find that uniform
-
-
-    float red = 0.0f;
-    float incr = 0.05f;
-    /* Render loop */
-    while (!glfwWindowShouldClose(window))
-    {
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        /* Draw */
-        glUseProgram(shader);
-        openGLCall(glUniform4f(location, red, 0.7f, 0.2f, 1.0f));
-
+        unsigned int vao; // Vertex array object
+        openGLCall(glGenVertexArrays(1, &vao));
         openGLCall(glBindVertexArray(vao));
-        openGLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo)); // To-Do: Mirar si los ibo también se almacenan en el vao. Si es así, no hace falta esta linea.
 
-        openGLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));  // Null porque ya he asignado en glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        
-        red += incr;
-        if (red > 1.0f)
-            incr = -0.05f;
-        else if (red < 0.0f)
-            incr = 0.05f;
-        
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
+        VertexArray va;
+        VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+        VertexBufferLayout layout;
+        layout.push<float>(2);
+        va.addBuffer(vb, layout);
 
-        /* Poll for and process events */
-        glfwPollEvents();
+        IndexBuffer ib(indices, 6);
+
+        /* Shaders */
+        string vertexShader = fileToString("resources/shaders/basic.vert");
+        string fragmentShader = fileToString("resources/shaders/basic.frag");
+
+        unsigned int shader = createShaderProgram(vertexShader, fragmentShader);
+        openGLCall(int location = glGetUniformLocation(shader, "u_Color"));
+        ASSERT(location != -1); // -1: Can't find that uniform
+
+        float red = 0.0f;
+        float incr = 0.05f;
+        /* Render loop */
+        while (!glfwWindowShouldClose(window))
+        {
+            /* Render here */
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            /* Draw */
+            glUseProgram(shader);
+            openGLCall(glUniform4f(location, red, 0.7f, 0.2f, 1.0f));
+
+            //openGLCall(glBindVertexArray(vao));
+            vb.bind(); // To-Do: Mirar si los ibo también se almacenan en el vao. Si es así, no hace falta esta linea.
+            ib.bind();
+
+            openGLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));  // Null porque ya he asignado en glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+
+            red += incr;
+            if (red > 1.0f)
+                incr = -0.05f;
+            else if (red < 0.0f)
+                incr = 0.05f;
+
+            /* Swap front and back buffers */
+            glfwSwapBuffers(window);
+
+            /* Poll for and process events */
+            glfwPollEvents();
+        }
+
+        openGLCall(glDeleteProgram(shader));
     }
-
-    glDeleteProgram(shader);
 
     glfwTerminate();
     return 0;
