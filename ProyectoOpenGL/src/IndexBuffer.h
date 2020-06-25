@@ -19,6 +19,7 @@ class IndexBuffer
 private:
 	unsigned int m_IndexBufferID;	///< ID del Index Buffer.
 	unsigned int m_Count;			///< Número (cantidad) de datos.
+
 public:
 
 	/**

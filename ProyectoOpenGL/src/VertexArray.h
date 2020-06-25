@@ -19,6 +19,7 @@ class VertexArray
 {
 private:
 	unsigned int m_VertexArrayID;	///< ID del Vertex Array
+
 public:
 	/**
 	* @brief Constructor de VertexArray
@@ -32,7 +33,7 @@ public:
 	/**
 	* @brief Añade un Vertex Buffer y layout.
 	*/
-	void addBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout);
+	void addBuffer(const VertexBuffer &vb, const VertexBufferLayout &layout);
 
 	/**
 	* @brief Selecciona (bind) el Vertex Array.

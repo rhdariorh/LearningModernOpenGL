@@ -18,106 +18,27 @@
 #include <string>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 // Mis clases
+#include "DebugMacros.h"
 #include "Renderer.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "VertexArray.h"
+#include "ProgramShader.h"
+#include "Texture.h"
 
 using namespace std;
-
-
-/**
- * @brief Introduce en un string el contenido de un fichero.
- *
- * @param [in] filepath ruta del fichero
- * @return Cadena de caracteres con el contenido del fichero.
- */
-static string fileToString(const string& filepath) {
-
-    string source = "";
-    ifstream stream(filepath);
-    if (stream.is_open()) {
-        string line;
-        stringstream ss;
-        while (getline(stream, line))
-        {
-            ss << line << '\n';
-        }
-        source = ss.str();
-    }
-    else
-    {
-        cout << "[Stream Error] (fileToString() <- main.cpp): Stream is not open." << endl;
-    }
-
-    return source;
-}
-
-/**
- * @brief Crea y compila un shader del tipo y código introducido.
- *
- * @param [in] type tipo de shader
- * @param [in] source código del shader a crear.
- * @return ID del shader creado.
- */
-static unsigned int compileShader(unsigned int type, const string& source)
-{
-    unsigned int id = glCreateShader(type);
-    const char* src = source.c_str();
-    glShaderSource(id, 1, &src, nullptr);
-    glCompileShader(id);
-
-    int result;
-    glGetShaderiv(id, GL_COMPILE_STATUS, &result);
-
-    if (!result) {
-        int length;
-        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-        char* message = (char*)alloca(length * sizeof(char)); // No se puede "char* message[length]" porque length no tiene un valor asignado inicialmente.
-        glGetShaderInfoLog(id, length, &length, message);
-        cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << endl; // Suponemos que solo usamos esos 2 tipos de shaders.
-        cout << message << endl;
-
-        glDeleteShader(id);
-
-        return 0;
-    }
-    return id;
-}
-
-/**
- * @brief Crea el programa con los shaders introducidos.
- *
- * @param [in] vertexShader Código del vertex shader.
- * @param [in] fragmentShader Código del fragment shader.
- * @return ID del programa creado.
- */
-static unsigned int createShaderProgram(const string& vertexShader, const string& fragmentShader)
-{
-    unsigned int program = glCreateProgram();
-    unsigned int vs = compileShader(GL_VERTEX_SHADER, vertexShader);
-    unsigned int fs = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
-
-    glAttachShader(program, vs);
-    glAttachShader(program, fs);
-    glLinkProgram(program);
-    glValidateProgram(program);
-
-    glDeleteShader(vs);
-    glDeleteShader(fs);
-
-    return program;
-}
 
 /*
 * Función principal
 */
 int main(void)
 {
+    //////////////////////////////////////////////////////////////////////////////////////
     GLFWwindow* window;
-
     /********************/
     /* INICIALIZACIONES */
     /********************/
@@ -150,22 +71,23 @@ int main(void)
 
     // Imprimir información inicial
     cout << "Versions:\n";
-    cout << "---OpenGL:\t" << glGetString(GL_VERSION) << "\n";
-    cout << "---GLSL:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << "\n";
-    cout << "---GLFW:\t" << glfwGetVersionString() << "\n";
-    cout << "---GLEW:\t" << glewGetString(GLEW_VERSION) << "\n";
-
+    cout << "---OpenGL:\t" << glGetString(GL_VERSION) << endl;
+    cout << "---GLSL:\t" << glGetString(GL_SHADING_LANGUAGE_VERSION) << endl;
+    cout << "---GLFW:\t" << glfwGetVersionString() << endl;
+    cout << "---GLEW:\t" << glewGetString(GLEW_VERSION) << endl << endl;
+    //////////////////////////////////////////////////////////////////////////////////////
 
     /*******************/
     /* PARTE PRINCIPAL */
     /*******************/
+
     {
         /* Geometrias */
-        float positions[8] = {
-            -0.5f, -0.5f, // 0
-             0.5f, -0.5f, // 1
-             0.5f,  0.5f, // 2
-            -0.5f,  0.5f  // 3
+        float positions[16] = {
+            -0.5f, -0.5f, 0.0f, 0.0f, // 0 | pos, tex
+             0.5f, -0.5f, 1.0f, 0.0f, // 1 | pos, tex
+             0.5f,  0.5f, 1.0f, 1.0f, // 2 | pos, tex
+            -0.5f,  0.5f, 0.0f, 1.0f  // 3 | pos, tex
         };
 
         unsigned int indices[] =
@@ -174,43 +96,59 @@ int main(void)
             2, 3, 0
         };
 
-        unsigned int vao; // Vertex array object
-        openGLCall(glGenVertexArrays(1, &vao));
-        openGLCall(glBindVertexArray(vao));
+        openGLCall(glEnable(GL_BLEND));
+        openGLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
+        /* Vertex Array + Vertex Buffer */
         VertexArray va;
-        VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+        VertexBuffer vb(positions, 4 * 4 * sizeof(float));
         VertexBufferLayout layout;
-        layout.push<float>(2);
+        layout.push(GL_FLOAT, 2);
+        layout.push(GL_FLOAT, 2);
         va.addBuffer(vb, layout);
 
+        /* Index Buffer */
         IndexBuffer ib(indices, 6);
 
-        /* Shaders */
-        string vertexShader = fileToString("resources/shaders/basic.vert");
-        string fragmentShader = fileToString("resources/shaders/basic.frag");
+        /* Projection Matrix */
+        glm::mat4 projection = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+        glm::mat4 view(1.0f);
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
+        glm::mat4 model(1.0f);
+        model = glm::translate(model, glm::vec3(1, 1, 0));
 
-        unsigned int shader = createShaderProgram(vertexShader, fragmentShader);
-        openGLCall(int location = glGetUniformLocation(shader, "u_Color"));
-        ASSERT(location != -1); // -1: Can't find that uniform
+        glm::mat4 mvp = projection * view * model;
+
+        /* Shaders */
+        ProgramShader programShader("resources/shaders/basic.vert", "resources/shaders/basic.frag");
+        programShader.bind();
+        programShader.setUniformMatrix4fv("u_MVP", mvp);
+
+		Texture texture("resources/textures/flowersDrawing.png");
+		texture.bind(0);
+		programShader.setUniform1i("u_Texture", 0);
+
+        va.unbind();
+        vb.unbind();
+        ib.unbind();
+        programShader.unbind();
+
+        Renderer renderer;
 
         float red = 0.0f;
         float incr = 0.05f;
+
         /* Render loop */
         while (!glfwWindowShouldClose(window))
         {
             /* Render here */
-            glClear(GL_COLOR_BUFFER_BIT);
+            renderer.clear();
 
             /* Draw */
-            glUseProgram(shader);
-            openGLCall(glUniform4f(location, red, 0.7f, 0.2f, 1.0f));
+            programShader.bind();
+            programShader.setUniform4f("u_Color", red, 0.7f, 0.2f, 1.0f);
 
-            //openGLCall(glBindVertexArray(vao));
-            vb.bind(); // To-Do: Mirar si los ibo también se almacenan en el vao. Si es así, no hace falta esta linea.
-            ib.bind();
-
-            openGLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));  // Null porque ya he asignado en glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+            renderer.draw(va, ib, programShader);
 
             red += incr;
             if (red > 1.0f)
@@ -224,8 +162,6 @@ int main(void)
             /* Poll for and process events */
             glfwPollEvents();
         }
-
-        openGLCall(glDeleteProgram(shader));
     }
 
     glfwTerminate();

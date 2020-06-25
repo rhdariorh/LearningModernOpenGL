@@ -9,7 +9,7 @@
  */
 
 #include "VertexArray.h"
-#include "Renderer.h"
+#include "DebugMacros.h"
 
 /**
 * @brief Constructor de VertexArray
@@ -31,16 +31,16 @@ VertexArray::~VertexArray()
 * @brief Añade un Vertex Buffer y layout.
 * Añade un Vertex Buffer con su respectivo VertexBufferLayout.
 */
-void VertexArray::addBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout)
+void VertexArray::addBuffer(const VertexBuffer &vb, const VertexBufferLayout &layout)
 {
 	bind();
 	vb.bind();
-	const vector<VertexBufferElement>& elements = layout.getElements();
+	const vector<VertexBufferElement> &elements = layout.getElements();
 	unsigned int offset = 0;
 
 	for (unsigned int i = 0; i < elements.size(); i++)
 	{
-		const VertexBufferElement& element = elements[i];
+		const VertexBufferElement &element = elements[i];
 		openGLCall(glEnableVertexAttribArray(i));
 		// Causa un warning al convertir unsigned int (4 bytes) a const void* (8 bytes). No es un problema.
 		openGLCall(glVertexAttribPointer(i, element.count, element.type, element.normalized, layout.getStride(), (const void*)offset));

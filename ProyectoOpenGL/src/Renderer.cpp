@@ -16,27 +16,24 @@
 using namespace std;
 
 /**
- * Limpia todos los flags de errores que ha producido OpenGL.
+ * Dibuja en pantalla con los parámetros introducidos.
+ *
+ * @param va Vertex Array
+ * @param ib Index Buffer
+ * @param programShader Shader
  */
-void openGLClearError()
+void Renderer::draw(const VertexArray &va, const IndexBuffer &ib, const ProgramShader &programShader) const
 {
-    while (glGetError());
+	programShader.bind();
+	va.bind();
+	ib.bind();
+    openGLCall(glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr)); // Null porque ya he asignado en glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 }
 
 /**
-* Mira los errores (banderas) generados por OpenGL e imprime información de ellos.
-*
-* @param [in] function  Nombre de la función donde se está comprobando si hay errores.
-* @param [in] line  Linea del código donde se encuentra la llamada a esa función.
-* @retval true  No se ha encontrado ningun error
-* @retval false Se ha encontrado un error
-*/
-bool openGLCheckError(const char* function, const char* file, int line)
+ * @brief Limpia la pantalla (glClear()).
+ */
+void Renderer::clear() const
 {
-    while (GLenum error = glGetError())
-    {
-        cout << "[OpenGL Error]( " << function << " <- " << file << " <- Line: " << line << " ): " << error << endl;
-        return false;
-    }
-    return true;
+    glClear(GL_COLOR_BUFFER_BIT);
 }

@@ -10,7 +10,7 @@
  */
 
 #include "VertexBuffer.h"
-#include "Renderer.h"
+#include "DebugMacros.h"
 #include <iostream>
 #include <GL/glew.h>
 

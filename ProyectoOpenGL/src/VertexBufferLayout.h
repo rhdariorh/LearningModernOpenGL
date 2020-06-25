@@ -1,6 +1,6 @@
 /**
  * @file VertexBufferLayout.h
- * @brief Cabecera e implementación de la clase VertexBufferLayout.
+ * @brief Cabecera de la clase VertexBufferLayout.
  *
  * Clase de abstracción que facilita el uso del layout (distribución)
  * para los Vertex Buffer. Además se define un `struct` que contiene la
@@ -62,12 +62,30 @@ public:
 	/**
 	* @brief Constructor de VertexBufferLayout
 	*/
-	VertexBufferLayout() { m_Stride = 0; }
+	VertexBufferLayout();
 
 	/**
-	* @brief
-	* @tparam T
+	* @brief Devuelve el tamaño o paso del layout completo.
 	*/
+	inline unsigned int getStride() const { return m_Stride; }
+
+	/**
+	* @brief Devuelve los elementos del layout.
+	* @return Elementos del layout.
+	*/
+	inline const vector<VertexBufferElement> getElements() const { return m_Elements; }
+
+	/**
+	 * @brief Añade un elemento al layout
+	 * 
+	 * @param [in] type Tipo de dato (GL_FLOAT, GL_UNSIGNED_INT...).
+	 * @param [in] count Número (cantidad) de datos.
+	 */
+	void push(unsigned int type, unsigned int count);
+
+	/*
+	* Ejemplo de como hacer push con plantillas:
+
 	template<typename T>
 	void push(unsigned int count)
 	{
@@ -95,15 +113,5 @@ public:
 		m_Elements.push_back({ GL_UNSIGNED_BYTE, count, GL_TRUE });
 		m_Stride += VertexBufferElement::getSizeOfType(GL_UNSIGNED_BYTE) * count;
 	}
-
-	/**
-	* @brief Devuelve el tamaño o paso del layout completo.
-	*/
-	inline unsigned int getStride() const { return m_Stride; }
-	
-	/**
-	* @brief Devuelve los elementos del layout.
-	* @return Elementos del layout.
-	*/
-	inline const vector<VertexBufferElement> getElements() const { return m_Elements; }
+		*/
 };
