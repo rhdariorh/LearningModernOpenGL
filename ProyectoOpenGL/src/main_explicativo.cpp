@@ -187,8 +187,8 @@ int main(void)
 			{
                 ImGui::Begin("Ajustes de objeto");
 				//ImGui::Text("This is some useful text.");
-				ImGui::SliderFloat3("TranslacionA", &translationA.x, 0.0f, 640.0f);
-                ImGui::SliderFloat3("TranslacionB", &translationB.x, 0.0f, 640.0f);
+				ImGui::SliderFloat3("Translacion A", &translationA.x, 0.0f, 640.0f);
+                ImGui::SliderFloat3("Translacion B", &translationB.x, 0.0f, 640.0f);
 				ImGui::Text("Media: %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 				ImGui::End();
 			}

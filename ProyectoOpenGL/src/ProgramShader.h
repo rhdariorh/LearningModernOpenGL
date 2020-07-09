@@ -30,6 +30,8 @@ public:
 	void bind() const;
 	void unbind() const;
 
+	inline unsigned int getID() { return m_ProgramShaderID; }
+
 	/* Uniform setters */
 
 	void setUniform1f(const std::string &name, float value);

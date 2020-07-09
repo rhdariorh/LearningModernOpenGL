@@ -17,8 +17,6 @@
 #include <sstream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -34,6 +32,7 @@
 
 #include "tests/Test.h"
 #include "tests/TestClearColor.h"
+#include "tests/TestTexture2D.h"
 
 
 
@@ -101,6 +100,7 @@ int main(void)
         currentTest = testMenu; // Se inicia en el menú.
         
         testMenu->registerTest<test::TestClearColor>("Clear Color"); // Lo registro para que se pueda crear cuando se pulse el botón.
+        testMenu->registerTest<test::TestTexture2D>("Texture 2D");
 
         /* Render loop */
         while (!glfwWindowShouldClose(window))
