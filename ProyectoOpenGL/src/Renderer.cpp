@@ -13,7 +13,7 @@
 #include <iostream>
 #include <GL/glew.h>
 
-using namespace std;
+
 
 /**
  * Dibuja en pantalla con los parámetros introducidos.

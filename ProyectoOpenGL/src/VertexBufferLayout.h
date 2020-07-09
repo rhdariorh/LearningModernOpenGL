@@ -16,7 +16,7 @@
 #include <vector>
 #include <GL/glew.h>
 
-using namespace std;
+
 
 /**
 * Elementos del layout del Vertex Buffer.  
@@ -55,7 +55,7 @@ struct VertexBufferElement
 class VertexBufferLayout
 {
 private:
-	vector<VertexBufferElement> m_Elements;	///< Elementos del layout.
+	std::vector<VertexBufferElement> m_Elements;	///< Elementos del layout.
 	unsigned int m_Stride;					///< Tamaño o paso del Layout completo.
 
 public:
@@ -73,7 +73,7 @@ public:
 	* @brief Devuelve los elementos del layout.
 	* @return Elementos del layout.
 	*/
-	inline const vector<VertexBufferElement> getElements() const { return m_Elements; }
+	inline const std::vector<VertexBufferElement> getElements() const { return m_Elements; }
 
 	/**
 	 * @brief Añade un elemento al layout

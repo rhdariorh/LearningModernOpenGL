@@ -31,7 +31,7 @@ bool openGLCheckError(const char* function, const char* file, int line)
 {
     while (GLenum error = glGetError())
     {
-        cout << "[OpenGL Error]( " << function << " <- " << file << " <- Line: " << line << " ): " << error << endl;
+        std::cout << "[OpenGL Error]( " << function << " <- " << file << " <- Line: " << line << " ): " << error << std::endl;
         return false;
     }
     return true;

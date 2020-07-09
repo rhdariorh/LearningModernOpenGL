@@ -14,7 +14,7 @@
 #include "GL/glew.h"
 #include <iostream>
 
-using namespace std;
+
 /**
 * @def ASSERT(x)
 * @brief Añade un breakpoint si la condición es false.

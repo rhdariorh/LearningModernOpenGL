@@ -10,35 +10,35 @@
 
 #include "DebugMacros.h"
 
-using namespace std;
+
 
 class ProgramShader
 {
 
 private:
 	unsigned int m_ProgramShaderID;
-	unordered_map<string, int> m_UniformLocationCache;
+	std::unordered_map<std::string, int> m_UniformLocationCache;
 
-	unsigned int getUniformLocation(const string &name);
-	unsigned int createShaderProgram(const string &vertexShader, const string &fragmentShader);
-	unsigned int compileShader(unsigned int type, const string &source);
-	string fileToString(const string &filepath);
+	unsigned int getUniformLocation(const std::string &name);
+	unsigned int createShaderProgram(const std::string &vertexShader, const std::string &fragmentShader);
+	unsigned int compileShader(unsigned int type, const std::string &source);
+	std::string fileToString(const std::string &filepath);
 
 public:
-	ProgramShader(const string &vertexFilepath, const string &fragmentFilepath);
+	ProgramShader(const std::string &vertexFilepath, const std::string &fragmentFilepath);
 	~ProgramShader();
 	void bind() const;
 	void unbind() const;
 
 	/* Uniform setters */
 
-	void setUniform1f(const string &name, float value);
-	void setUniform2f(const string &name, float v0, float v1);
-	void setUniform3f(const string &name, float v0, float v1, float v2);
-	void setUniform4f(const string &name, float v0, float v1, float v2, float v3);
+	void setUniform1f(const std::string &name, float value);
+	void setUniform2f(const std::string &name, float v0, float v1);
+	void setUniform3f(const std::string &name, float v0, float v1, float v2);
+	void setUniform4f(const std::string &name, float v0, float v1, float v2, float v3);
 
 	 
-	void setUniform1i(const string &name, int value);
+	void setUniform1i(const std::string &name, int value);
 	// void setUniform2i(const string &name, int v0, int v1);
 	// void setUniform3i(const string &name, int v0, int v1, int v2);
 	// void setUniform4i(const string &name, int v0, int v1, int v2, int v3);
@@ -65,7 +65,7 @@ public:
 
 	// void setUniformMatrix2fv(const string &name, unsigned int count, bool transpose, const float *value);
 	// void setUniformMatrix3fv(const string &name, unsigned int count, bool transpose, const float* value);
-	 void setUniformMatrix4fv(const string &name, const glm::mat4 &matrix);
+	 void setUniformMatrix4fv(const std::string &name, const glm::mat4 &matrix);
 	
 	// void setUniformMatrix2x3fv(const string& name, unsigned int count, bool transpose, const float* value);
 	// void setUniformMatrix3x2fv(const string& name, unsigned int count, bool transpose, const float* value);

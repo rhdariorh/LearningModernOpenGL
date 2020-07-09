@@ -1,7 +1,7 @@
 #include "Texture.h"
 #include "stb_image/stb_image.h"
 
-Texture::Texture(const string& path)
+Texture::Texture(const std::string& path)
 {
 	m_TextureID = 0;
 	m_FilePath = path;
@@ -12,7 +12,7 @@ Texture::Texture(const string& path)
 
 	m_LocalBuffer = stbi_load(path.c_str(), &m_Width, &m_Height, &m_BPP, 4);
 	if (!m_LocalBuffer)
-		cout << "[Texture Error](Texture <- Texture.cpp): error loading the texture file '" << path << "'." << endl;
+		std::cout << "[Texture Error](Texture <- Texture.cpp): error loading the texture file '" << path << "'." << std::endl;
 
 	openGLCall(glGenTextures(1, &m_TextureID));
 	openGLCall(glBindTexture(GL_TEXTURE_2D, m_TextureID));

@@ -1,11 +1,11 @@
 #include "ProgramShader.h"
 
-ProgramShader::ProgramShader(const string &vertexFilepath, const string &fragmentFilepath)
+ProgramShader::ProgramShader(const std::string &vertexFilepath, const std::string &fragmentFilepath)
 {
     m_ProgramShaderID = 0;
     
-    string vertexShader = fileToString(vertexFilepath);
-	string fragmentShader = fileToString(fragmentFilepath);
+    std::string vertexShader = fileToString(vertexFilepath);
+	std::string fragmentShader = fileToString(fragmentFilepath);
     
     m_ProgramShaderID = createShaderProgram(vertexShader, fragmentShader);
 }
@@ -25,14 +25,14 @@ void ProgramShader::unbind() const
     openGLCall(glUseProgram(0));
 }
 
-unsigned int ProgramShader::getUniformLocation(const string &name)
+unsigned int ProgramShader::getUniformLocation(const std::string &name)
 {
     int location;
     if (m_UniformLocationCache.find(name) == m_UniformLocationCache.end()) // Para tener que buscarlo solo 1 vez con glGetUniformLocation().
     {
 		openGLCall(location = glGetUniformLocation(m_ProgramShaderID, name.c_str()));
 		if (location == -1) // -1: Can't find that uniform
-			cout << "[Shader Warning](getUniformLocation <- ProgramShader.cpp): Uniform " << name << " is not used or declared." << endl;
+			std::cout << "[Shader Warning](getUniformLocation <- ProgramShader.cpp): Uniform " << name << " is not used or declared." << std::endl;
         m_UniformLocationCache[name] = location;
     }
     else
@@ -50,7 +50,7 @@ unsigned int ProgramShader::getUniformLocation(const string &name)
  * @param [in] fragmentShader Código del fragment shader.
  * @return ID del programa creado.
  */
-unsigned int ProgramShader::createShaderProgram(const string &vertexShader, const string &fragmentShader)
+unsigned int ProgramShader::createShaderProgram(const std::string &vertexShader, const std::string &fragmentShader)
 {
     unsigned int program = glCreateProgram();
     unsigned int vs = compileShader(GL_VERTEX_SHADER, vertexShader);
@@ -74,7 +74,7 @@ unsigned int ProgramShader::createShaderProgram(const string &vertexShader, cons
  * @param [in] source código del shader a crear.
  * @return ID del shader creado.
  */
-unsigned int ProgramShader::compileShader(unsigned int type, const string &source)
+unsigned int ProgramShader::compileShader(unsigned int type, const std::string &source)
 {
     unsigned int id = glCreateShader(type);
     const char* src = source.c_str();
@@ -89,8 +89,8 @@ unsigned int ProgramShader::compileShader(unsigned int type, const string &sourc
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
         char* message = (char*)alloca(length * sizeof(char)); // No se puede "char* message[length]" porque length no tiene un valor asignado inicialmente.
         glGetShaderInfoLog(id, length, &length, message);
-        cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << endl; // Suponemos que solo usamos esos 2 tipos de shaders.
-        cout << message << endl;
+        std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl; // Suponemos que solo usamos esos 2 tipos de shaders.
+        std::cout << message << std::endl;
 
         glDeleteShader(id);
 
@@ -100,19 +100,19 @@ unsigned int ProgramShader::compileShader(unsigned int type, const string &sourc
 }
 
 /**
- * @brief Introduce en un string el contenido de un fichero.
+ * @brief Introduce en un std::string el contenido de un fichero.
  *
  * @param [in] filepath ruta del fichero
  * @return Cadena de caracteres con el contenido del fichero.
  */
-string ProgramShader::fileToString(const string &filepath) 
+std::string ProgramShader::fileToString(const std::string &filepath) 
 {
 
-    string source = "";
-    ifstream stream(filepath);
+    std::string source = "";
+    std:: ifstream stream(filepath);
     if (stream.is_open()) {
-        string line;
-        stringstream ss;
+        std::string line;
+        std::stringstream ss;
         while (getline(stream, line))
         {
             ss << line << '\n';
@@ -121,7 +121,7 @@ string ProgramShader::fileToString(const string &filepath)
     }
     else
     {
-        cout << "[Stream Error] (fileToString() <- ProgramShader.cpp): Stream is not open." << endl;
+        std::cout << "[Stream Error] (fileTostd::string() <- ProgramShader.cpp): Stream is not open." << std::endl;
     }
 
     return source;
@@ -129,37 +129,37 @@ string ProgramShader::fileToString(const string &filepath)
 
 /* Uniform setters */
 
-void ProgramShader::setUniform1f(const string &name, float value)
+void ProgramShader::setUniform1f(const std::string &name, float value)
 {
 	unsigned int location = ProgramShader::getUniformLocation(name);
 	openGLCall(glUniform1f(location, value));
 }
 
-void ProgramShader::setUniform2f(const string &name, float v0, float v1)
+void ProgramShader::setUniform2f(const std::string &name, float v0, float v1)
 {
 	unsigned int location = ProgramShader::getUniformLocation(name);
 	openGLCall(glUniform2f(location, v0, v1));
 }
 
-void ProgramShader::setUniform3f(const string &name, float v0, float v1, float v2)
+void ProgramShader::setUniform3f(const std::string &name, float v0, float v1, float v2)
 {
 	unsigned int location = ProgramShader::getUniformLocation(name);
 	openGLCall(glUniform3f(location, v0, v1, v2));
 }
 
-void ProgramShader::setUniform4f(const string &name, float v0, float v1, float v2, float v3)
+void ProgramShader::setUniform4f(const std::string &name, float v0, float v1, float v2, float v3)
 {
 	unsigned int location = ProgramShader::getUniformLocation(name);
 	openGLCall(glUniform4f(location, v0, v1, v2, v3));
 }
 
-void ProgramShader::setUniform1i(const string& name, int value)
+void ProgramShader::setUniform1i(const std::string& name, int value)
 {
 	unsigned int location = ProgramShader::getUniformLocation(name);
 	openGLCall(glUniform1i(location, value));
 }
 
-void ProgramShader::setUniformMatrix4fv(const string& name, const glm::mat4& matrix)
+void ProgramShader::setUniformMatrix4fv(const std::string& name, const glm::mat4& matrix)
 {
     unsigned int location = ProgramShader::getUniformLocation(name);
     openGLCall(glUniformMatrix4fv(location, 1, GL_FALSE, &matrix[0][0]));
