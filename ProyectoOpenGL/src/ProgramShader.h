@@ -1,7 +1,8 @@
 #pragma once
 
-#include <iostream>
+
 #include <string>
+#include <iostream>
 #include <fstream>
 #include <sstream>
 #include "GL/glew.h"
@@ -55,7 +56,7 @@ public:
 	// void setUniform3fv(const string& name, unsigned int count, const float* value);
 	// void setUniform4fv(const string& name, unsigned int count, const float* value);
 
-	// void setUniform1iv(const string& name, unsigned int count, const int* value);
+	void setUniform1iv(const std::string& name, unsigned int count, const int* value);
 	// void setUniform2iv(const string& name, unsigned int count, const int* value);
 	// void setUniform3iv(const string& name, unsigned int count, const int* value);
 	// void setUniform4iv(const string& name, unsigned int count, const int* value);

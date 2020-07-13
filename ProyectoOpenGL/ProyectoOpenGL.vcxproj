@@ -167,6 +167,8 @@
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\ProgramShader.cpp" />
     <ClCompile Include="src\tests\Test.cpp" />
+    <ClCompile Include="src\tests\TestBatchRendering.cpp" />
+    <ClCompile Include="src\tests\TestBatchRendering2.cpp" />
     <ClCompile Include="src\tests\TestTexture2D.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\VertexArray.cpp" />
@@ -178,6 +180,8 @@
     <None Include="resources\shaders\basic.frag" />
     <None Include="resources\shaders\basic.shader" />
     <None Include="resources\shaders\basic.vert" />
+    <None Include="resources\shaders\basicColor.frag" />
+    <None Include="resources\shaders\basicColor.vert" />
     <None Include="src\external_code\glm\detail\func_common.inl" />
     <None Include="src\external_code\glm\detail\func_common_simd.inl" />
     <None Include="src\external_code\glm\detail\func_exponential.inl" />
@@ -612,6 +616,8 @@
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\ProgramShader.h" />
     <ClInclude Include="src\tests\Test.h" />
+    <ClInclude Include="src\tests\TestBatchRendering.h" />
+    <ClInclude Include="src\tests\TestBatchRendering2.h" />
     <ClInclude Include="src\tests\TestTexture2D.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\VertexArray.h" />

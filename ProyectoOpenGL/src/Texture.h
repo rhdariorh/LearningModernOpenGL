@@ -14,7 +14,7 @@ public:
 	~Texture();
 
 	void bind(unsigned int slot = 0) const ;
-	void unbind() const;
+	static inline void unbind() { openGLCall(glBindTexture(GL_TEXTURE_2D, 0)) }
 
 	inline int getWidth() const { return m_Width; }
 	inline int getHeight() const { return m_Height; }

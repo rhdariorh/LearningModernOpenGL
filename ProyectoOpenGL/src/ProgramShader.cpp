@@ -159,6 +159,12 @@ void ProgramShader::setUniform1i(const std::string& name, int value)
 	openGLCall(glUniform1i(location, value));
 }
 
+void ProgramShader::setUniform1iv(const std::string& name, unsigned int count, const int* value)
+{
+    unsigned int location = ProgramShader::getUniformLocation(name);
+    openGLCall(glUniform1iv(location, count, value));
+}
+
 void ProgramShader::setUniformMatrix4fv(const std::string& name, const glm::mat4& matrix)
 {
     unsigned int location = ProgramShader::getUniformLocation(name);

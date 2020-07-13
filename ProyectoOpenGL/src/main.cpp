@@ -33,6 +33,8 @@
 #include "tests/Test.h"
 #include "tests/TestClearColor.h"
 #include "tests/TestTexture2D.h"
+#include "tests/TestBatchRendering.h"
+#include "tests/TestBatchRendering2.h"
 
 
 
@@ -101,6 +103,8 @@ int main(void)
         
         testMenu->registerTest<test::TestClearColor>("Clear Color"); // Lo registro para que se pueda crear cuando se pulse el botón.
         testMenu->registerTest<test::TestTexture2D>("Texture 2D");
+        testMenu->registerTest<test::TestBatchRendering>("Batch Rendering");
+        testMenu->registerTest<test::TestBatchRendering2>("Batch Rendering - Textures");
 
         /* Render loop */
         while (!glfwWindowShouldClose(window))
