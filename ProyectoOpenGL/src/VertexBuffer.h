@@ -28,6 +28,11 @@ public:
 	VertexBuffer(const void* data, unsigned int size);
 
 	/**
+	* @brief Constructor de VertexBuffer con indicio de dibujado.
+	*/
+	VertexBuffer(const void* data, unsigned int size, unsigned int drawHint);
+
+	/**
 	* @brief Destructor de VertexBuffer.
 	*/
 	~VertexBuffer();
@@ -41,4 +46,9 @@ public:
 	* @brief Deselecciona el Vertex Buffer.
 	*/
 	void unbind() const;
+
+	/**
+	* @brief Asigna los datos al VertexBuffer.
+	*/
+	void setData(const void* data, unsigned int size);
 };

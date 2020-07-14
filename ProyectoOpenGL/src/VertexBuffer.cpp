@@ -27,6 +27,17 @@ VertexBuffer::VertexBuffer(const void* data, unsigned int size)
 }
 
 /**
+* @brief Constructor de VertexBuffer con indicio de dibujado.
+*/
+VertexBuffer::VertexBuffer(const void* data, unsigned int size, unsigned int drawHint)
+{
+    openGLCall(glGenBuffers(1, &m_VertexBufferID));
+    openGLCall(glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferID));
+    openGLCall(glBufferData(GL_ARRAY_BUFFER, size, data, drawHint));
+
+}
+
+/**
 * @brief Destructor de VertexBuffer.
 */
 VertexBuffer::~VertexBuffer() 
@@ -50,4 +61,11 @@ void VertexBuffer::bind() const
 void VertexBuffer::unbind() const
 {
     openGLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+}
+
+/**
+* @brief Asigna los datos al VertexBuffer.
+*/
+void VertexBuffer::setData(const void* data, unsigned int size) {
+    openGLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, size, data));
 }

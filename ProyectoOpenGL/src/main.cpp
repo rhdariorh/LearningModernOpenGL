@@ -17,6 +17,8 @@
 #include <sstream>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <math.h> 
+#include <chrono>
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -30,13 +32,13 @@
 #include "ProgramShader.h"
 #include "Texture.h"
 
-#include "tests/Test.h"
-#include "tests/TestClearColor.h"
-#include "tests/TestTexture2D.h"
-#include "tests/TestBatchRendering.h"
-#include "tests/TestBatchRendering2.h"
+#include "Test.h"
+#include "TestClearColor.h"
+#include "TestTexture2D.h"
+#include "batch/TestBatchRendering.h"
+#include "batch/TestBatchRenderDynamicGeo.h"
 
-
+#define PI 3.14159265
 
 /*
 * Función principal
@@ -103,12 +105,18 @@ int main(void)
         
         testMenu->registerTest<test::TestClearColor>("Clear Color"); // Lo registro para que se pueda crear cuando se pulse el botón.
         testMenu->registerTest<test::TestTexture2D>("Texture 2D");
-        testMenu->registerTest<test::TestBatchRendering>("Batch Rendering");
-        testMenu->registerTest<test::TestBatchRendering2>("Batch Rendering - Textures");
+        testMenu->registerTest<test::TestBatchRendering>("Batch Rendering - Textures");
+        testMenu->registerTest<test::TestBatchRenderDynamicGeo>("Batch Rendering - Dynamic Geometry");
 
+        float angle = 0;
         /* Render loop */
         while (!glfwWindowShouldClose(window))
         {
+            if (angle == 360)
+                angle = 1;
+            else
+                angle++;
+
             renderer.clear();
 
             /* ImGui */
@@ -118,7 +126,7 @@ int main(void)
 
             if (currentTest)
             {
-                currentTest->onUpdate(0.0f);
+                currentTest->onUpdate((sin(angle * PI / 180) + 1)/2);
                 currentTest->onRender();
                 ImGui::Begin("Test options");
                 if (currentTest != testMenu && ImGui::Button("<-"))

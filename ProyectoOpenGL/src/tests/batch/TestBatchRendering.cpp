@@ -1,4 +1,15 @@
-#include "TestBatchRendering2.h"
+/**
+ * @file TestBatchRendering.cpp
+ * @brief Prueba de Batch Rendering con texturas.
+ *
+ *  Prueba de Batch Rendering de dos quads con texturas diferentes.
+ *
+ * @author Darío Rodríguez Hernández
+ * @date 00/00/0000
+ * @version 0.0
+ */
+
+#include "TestBatchRendering.h"
 
 #include <iostream>
 #include "DebugMacros.h"
@@ -15,7 +26,7 @@
 namespace test
 {
 
-    TestBatchRendering2::TestBatchRendering2()
+    TestBatchRendering::TestBatchRendering()
         : m_Projection(glm::ortho(0.0f, 640.0f, 0.0f, 480.f, -100.0f, 100.0f)),
         m_View(glm::translate(glm::mat4(1.0), glm::vec3(0.0f, 0.0f, 0.0f))),
         m_TranslationA(150, 300, 0),
@@ -24,7 +35,7 @@ namespace test
         m_VAO(new VertexArray())
     {
 
-        float positions[80] = { // pos[3], color[4], tex[2], texIndex
+        float vertices[] = { // pos[3], color[4], tex[2], texIndex
          -75.0f, -75.0f,  0.0f,     1.0f,  0.5f, 0.7f, 0.8f,    0.0f, 0.0f,  0.0f, // 0
           75.0f, -75.0f,  0.0f,     1.0f,  0.5f, 0.7f, 0.8f,    1.0f, 0.0f,  0.0f, // 1
           75.0f,  75.0f,  0.0f,     1.0f,  0.5f, 0.7f, 0.8f,    1.0f, 1.0f,  0.0f, // 2
@@ -49,7 +60,7 @@ namespace test
         openGLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
         /* Vertex Array + Vertex Buffer */
-        m_VBO = new VertexBuffer(positions, 8 * 10 * sizeof(float));
+        m_VBO = new VertexBuffer(vertices, 8 * 10 * sizeof(float));
         VertexBufferLayout layout;
         layout.push(GL_FLOAT, 3);
         layout.push(GL_FLOAT, 4);
@@ -79,7 +90,7 @@ namespace test
         m_ProgramShader->unbind();
 	}
 
-	TestBatchRendering2::~TestBatchRendering2() 
+	TestBatchRendering::~TestBatchRendering() 
     {
         // delete textures
         for (unsigned int i = 0; i < 32; i++)
@@ -94,25 +105,26 @@ namespace test
         delete m_ProgramShader;
     }
 
-	void TestBatchRendering2::onUpdate(float deltaTime) {}
+	void TestBatchRendering::onUpdate(float deltaTime) 
+    {
+        m_ProgramShader->bind();
 
-	void TestBatchRendering2::onRender()
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationA);
+        glm::mat4 mvp = m_Projection * m_View * model;
+
+        m_ProgramShader->setUniformMatrix4fv("u_MVP", mvp);
+    }
+
+	void TestBatchRendering::onRender()
 	{
 		openGLCall(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
 		//openGLCall(glClear(GL_COLOR_BUFFER_BIT));
 
         Renderer renderer;
-
-        m_ProgramShader->bind();
-
-        // Voy a imprimir dos "objetos" cada uno con su mvp y comparten va y ib.
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationA);
-        glm::mat4 mvp = m_Projection * m_View * model;
-        m_ProgramShader->setUniformMatrix4fv("u_MVP", mvp);
         renderer.draw(*m_VAO, *m_IBO, *m_ProgramShader);
 	}
 
-	void TestBatchRendering2::onImGuiRender()
+	void TestBatchRendering::onImGuiRender()
 	{
         //ImGui::Text("This is some useful text.");
         ImGui::SliderFloat3("Translacion A", &m_TranslationA.x, 0.0f, 640.0f);

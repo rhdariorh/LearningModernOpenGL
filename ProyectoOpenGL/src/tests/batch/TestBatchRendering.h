@@ -8,7 +8,7 @@
 #include "ProgramShader.h"
 
 namespace test {
-	class TestBatchRendering2 : public Test
+	class TestBatchRendering : public Test
 	{
 	private:
 		VertexArray* m_VAO;
@@ -21,8 +21,8 @@ namespace test {
 		glm::vec3 m_TranslationA, m_TranslationB;
 
 	public:
-		TestBatchRendering2();
-		~TestBatchRendering2();
+		TestBatchRendering();
+		~TestBatchRendering();
 
 		void onUpdate(float deltaTime) override;
 		void onRender() override;
