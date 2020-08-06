@@ -52,3 +52,13 @@ void IndexBuffer::unbind() const
 {
     openGLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 }
+
+
+/**
+* @brief Establece el número datos.
+* Útil para que el renderer no renderice todos los datos si no es necesario, solo los que indiquemos.
+*/
+void IndexBuffer::setCount(unsigned int count)
+{
+    m_Count = count;
+}

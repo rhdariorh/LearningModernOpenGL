@@ -81,6 +81,9 @@
     <ClCompile Include="src\tests\batch\TestBatchRendering.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\tests\batch\TestBatchRenderDynamicGeoIndices.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\basic.shader" />
@@ -1408,6 +1411,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\tests\batch\TestBatchRendering.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tests\batch\TestBatchRenderDynamicGeoIndices.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -37,6 +37,7 @@
 #include "TestTexture2D.h"
 #include "batch/TestBatchRendering.h"
 #include "batch/TestBatchRenderDynamicGeo.h"
+#include "batch/TestBatchRenderDynamicGeoIndices.h"
 
 #define PI 3.14159265
 
@@ -107,6 +108,7 @@ int main(void)
         testMenu->registerTest<test::TestTexture2D>("Texture 2D");
         testMenu->registerTest<test::TestBatchRendering>("Batch Rendering - Textures");
         testMenu->registerTest<test::TestBatchRenderDynamicGeo>("Batch Rendering - Dynamic Geometry");
+        testMenu->registerTest<test::TestBatchRenderDynamicGeoIndices>("Batch Rendering - Dynamic Geometry & Indices");
 
         float angle = 0;
         /* Render loop */

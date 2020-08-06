@@ -43,6 +43,11 @@ public:
 	void unbind() const;
 
 	/**
+	* @brief Establece el número datos.
+	*/
+	void setCount(unsigned int count);
+
+	/**
 	* @brief Devuelve el número de datos del Index Buffer.
 	* @return Count. Número (cantidad) de datos del Index Buffer.
 	*/
